@@ -85,7 +85,7 @@ exports.isSignedIn=expressJwt({
 
 exports.isAuthenticated=(req,res,next)=>{
   //req.profile will be set at fronend time.....so keep an eye on that
-  let checker=req.profile && req.auth && req.profile._id===req.auth._id;
+  let checker=req.profile && req.auth && req.profile._id==req.auth._id;
   if(!checker){
     return res.status(403).json({
       error:"Access Denied"
