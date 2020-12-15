@@ -28,3 +28,31 @@ exports.createOrder = (req, res) => {
     res.json(order);
   });
 };
+
+exports.getAllOrder = (req, res) => {
+  Order.find()
+    .populate('user', '_id name')
+    .exec((err, orders) => {
+      if (err) {
+        return res.status(400).json({
+          ERROR: 'Unable to fetch all orders/No orders found',
+        });
+      }
+      res.json(orders);
+    });
+};
+
+exports.getOrderStatus = (req, res) => {
+  return res.json(Order.schema.path('status').enumValues);
+};
+
+exports.updateStatus = (req, res) => {
+  Order.update({ _id: req.body.orderId }, { $set: { status: req.body.status } }, (err, order) => {
+    if (err) {
+      return res.status(400).json({
+        error: 'Unable to set status',
+      });
+    }
+    res.json(order);
+  });
+};
