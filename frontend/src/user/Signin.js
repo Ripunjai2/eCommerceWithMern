@@ -1,62 +1,61 @@
-import React, { useState } from "react";
-import Base from "../core/Base";
-import { Link, Redirect } from "react-router-dom";
+import React, { useState } from 'react';
+import Base from '../core/Base';
+import { Redirect } from 'react-router-dom';
 
-import { signin, authenticate, isAutheticated } from "../auth/helper";
+import { signin, authenticate, isAutheticated } from '../auth/helper';
 
 const Signin = () => {
   const [values, setValues] = useState({
-    email: "",
-    password: "",
-    error: "",
+    email: 'r@admin.com',
+    password: 'ripunjai',
+    error: '',
     loading: false,
-    didRedirect: false
+    didRedirect: false,
   });
 
   const { email, password, error, loading, didRedirect } = values;
   const { user } = isAutheticated();
 
-  const handleChange = name => event => {
+  const handleChange = (name) => (event) => {
     setValues({ ...values, error: false, [name]: event.target.value });
   };
 
-  const onSubmit = event => {
+  const onSubmit = (event) => {
     event.preventDefault();
     setValues({ ...values, error: false, loading: true });
     signin({ email, password })
-      .then(data => {
+      .then((data) => {
         if (data.error) {
           setValues({ ...values, error: data.error, loading: false });
         } else {
           authenticate(data, () => {
             setValues({
               ...values,
-              didRedirect: true
+              didRedirect: true,
             });
           });
         }
       })
-      .catch(console.log("signin request failed"));
+      .catch(console.log('signin request failed'));
   };
 
   const performRedirect = () => {
-    //TODO: do a redirect here
     if (didRedirect) {
       if (user && user.role === 1) {
-        return <p>redirect to admin</p>;
+        return <Redirect to='/admin/dashboard' />;
       } else {
-        return <p>redirect to user dashboard</p>;
+        return <Redirect to='/user/dashboard' />;
       }
     }
     if (isAutheticated()) {
-      return <Redirect to="/" />;
+      return <Redirect to='/' />;
     }
   };
 
   const loadingMessage = () => {
     return (
       loading && (
-        <div className="alert alert-info">
+        <div className='alert alert-info'>
           <h2>Loading...</h2>
         </div>
       )
@@ -65,12 +64,9 @@ const Signin = () => {
 
   const errorMessage = () => {
     return (
-      <div className="row">
-        <div className="col-md-6 offset-sm-3 text-left">
-          <div
-            className="alert alert-danger"
-            style={{ display: error ? "" : "none" }}
-          >
+      <div className='row'>
+        <div className='col-md-6 offset-sm-3 text-left'>
+          <div className='alert alert-danger' style={{ display: error ? '' : 'none' }}>
             {error}
           </div>
         </div>
@@ -80,29 +76,19 @@ const Signin = () => {
 
   const signInForm = () => {
     return (
-      <div className="row">
-        <div className="col-md-6 offset-sm-3 text-left">
+      <div className='row'>
+        <div className='col-md-6 offset-sm-3 text-left'>
           <form>
-            <div className="form-group">
-              <label className="text-light">Email</label>
-              <input
-                onChange={handleChange("email")}
-                value={email}
-                className="form-control"
-                type="email"
-              />
+            <div className='form-group'>
+              <label className='text-light'>Email</label>
+              <input onChange={handleChange('email')} value={email} className='form-control' type='email' />
             </div>
 
-            <div className="form-group">
-              <label className="text-light">Password</label>
-              <input
-                onChange={handleChange("password")}
-                value={password}
-                className="form-control"
-                type="password"
-              />
+            <div className='form-group'>
+              <label className='text-light'>Password</label>
+              <input onChange={handleChange('password')} value={password} className='form-control' type='password' />
             </div>
-            <button onClick={onSubmit} className="btn btn-success btn-block">
+            <button onClick={onSubmit} className='btn btn-success btn-block'>
               Submit
             </button>
           </form>
@@ -112,12 +98,13 @@ const Signin = () => {
   };
 
   return (
-    <Base title="Sign In page" description="A page for user to sign in!">
+    <Base title='Sign In page' description='A page for user to sign in!'>
       {loadingMessage()}
       {errorMessage()}
       {signInForm()}
       {performRedirect()}
-      <p className="text-white text-center">{JSON.stringify(values)}</p>
+
+      <p className='text-white text-center'>{JSON.stringify(values)}</p>
     </Base>
   );
 };

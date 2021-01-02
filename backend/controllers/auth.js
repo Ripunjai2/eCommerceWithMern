@@ -66,7 +66,7 @@ exports.signin = (req, res) => {
 
 exports.signout = (req, res) => {
   //remove token from the okies
-  res.clearcookies('token');
+  res.clearCookie('token');
 };
 
 exports.isSignedIn = expressJwt({
